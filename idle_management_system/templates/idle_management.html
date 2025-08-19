@@ -20,31 +20,55 @@
 </div>
 
 <div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="mb-0">Danh sách nhân viên idle</h5>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex gap-2">
+                    <input type="text" id="searchInput" class="form-control form-control-sm" 
+                           placeholder="Tìm kiếm theo tên, account, skill...">
+                    <select id="statusFilter" class="form-select form-select-sm">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Being Idle">Being Idle</option>
+                        <option value="To be Idle">To be Idle</option>
+                        <option value="Idle Short Term">Idle Short Term</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th>STT</th>
-                        <th>Họ tên</th>
-                        <th>Account</th>
-                        <th>Bộ phận</th>
-                        <th>Loại</th>
-                        <th>Idle từ</th>
-                        <th>Tháng idle</th>
-                        <th>Khẩn cấp</th>
-                        <th>Trạng thái</th>
-                        <th>Thao tác</th>
+                        <th style="width: 5%;">STT</th>
+                        <th style="width: 15%;">Họ tên</th>
+                        <th style="width: 10%;">Account</th>
+                        <th style="width: 15%;">Bộ phận</th>
+                        <th style="width: 10%;">Idle (tháng)</th>
+                        <th style="width: 10%;">Loại</th>
+                        <th style="width: 10%;">RA PIC</th>
+                        <th style="width: 10%;">JP Level</th>
+                        {% if current_user.role in ['Admin', 'RA', 'MNG'] %}
+                        <th style="width: 10%;">Giá bán (JPY)</th>
+                        {% endif %}
+                        <th style="width: 5%;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for employee in employees.items %}
-                    <tr class="{{ 'table-warning' if employee.urgent_case == 'Yes' else '' }}">
+                    <tr class="{{ 'table-warning' if employee.urgent_case == 'Yes' else '' }}" 
+                        style="cursor: pointer;" 
+                        onclick="showEmployeeDetail({{ employee.id }})"
+                        data-employee-id="{{ employee.id }}">
                         <td>{{ loop.index + (employees.page - 1) * employees.per_page }}</td>
                         <td>
                             <strong>{{ employee.full_name }}</strong>
-                            {% if employee.national %}
-                                <br><small class="text-muted">{{ employee.national }}</small>
+                            {% if employee.urgent_case == 'Yes' %}
+                                <span class="badge bg-danger ms-1">Khẩn cấp</span>
                             {% endif %}
                         </td>
                         <td>{{ employee.account }}</td>
@@ -55,43 +79,33 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if employee.type %}
-                                <span class="badge bg-info">{{ employee.type }}</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Chưa xác định</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if employee.idle_from %}
-                                {{ employee.idle_from.strftime('%d/%m/%Y') }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                        <td>
                             {% if employee.idle_mm %}
                                 <span class="badge bg-{{ 'danger' if employee.idle_mm >= 2 else 'warning' }}">
-                                    {{ employee.idle_mm }} tháng
+                                    {{ employee.idle_mm }}
                                 </span>
                             {% else %}
                                 -
                             {% endif %}
                         </td>
                         <td>
-                            {% if employee.urgent_case == 'Yes' %}
-                                <span class="badge bg-danger">Có</span>
+                            {% if employee.type %}
+                                <span class="badge bg-info">{{ employee.type }}</span>
                             {% else %}
-                                <span class="badge bg-success">Không</span>
+                                -
                             {% endif %}
                         </td>
+                        <td>{{ employee.ra_pic or '-' }}</td>
+                        <td>{{ employee.jp_level or '-' }}</td>
+                        {% if current_user.role in ['Admin', 'RA', 'MNG'] %}
                         <td>
-                            {% if employee.change_dept_lending %}
-                                <span class="badge bg-primary">{{ employee.change_dept_lending }}</span>
+                            {% if employee.sale_price_jpy %}
+                                <strong>{{ "{:,}".format(employee.sale_price_jpy) }}</strong>
                             {% else %}
-                                <span class="badge bg-secondary">Chưa xác định</span>
+                                -
                             {% endif %}
                         </td>
-                        <td>
+                        {% endif %}
+                        <td onclick="event.stopPropagation()">
                             <div class="btn-group" role="group">
                                 {% if current_user.role in ['Admin', 'RA', 'MNG'] %}
                                 <a href="{{ url_for('idle.edit_employee', employee_id=employee.id) }}" 
@@ -116,7 +130,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="10" class="text-center text-muted">Không có dữ liệu</td>
+                        <td colspan="{{ 10 if current_user.role in ['Admin', 'RA', 'MNG'] else 9 }}" class="text-center text-muted">Không có dữ liệu</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -126,7 +140,7 @@
         <!-- Pagination -->
         {% if employees.pages > 1 %}
         <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-center mt-3">
                 {% if employees.has_prev %}
                     <li class="page-item">
                         <a class="page-link" href="{{ url_for('idle.index', page=employees.prev_num) }}">Trước</a>
@@ -161,10 +175,185 @@
         {% endif %}
     </div>
 </div>
+
+<!-- Modal hiển thị chi tiết nhân viên -->
+<div class="modal fade" id="employeeDetailModal" tabindex="-1" aria-labelledby="employeeDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="employeeDetailModalLabel">Chi tiết nhân viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="employeeDetailBody">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Đang tải...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <div id="modalActionButtons"></div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+// Hiển thị modal chi tiết nhân viên
+function showEmployeeDetail(employeeId) {
+    const modal = new bootstrap.Modal(document.getElementById('employeeDetailModal'));
+    const modalBody = document.getElementById('employeeDetailBody');
+    const modalTitle = document.getElementById('employeeDetailModalLabel');
+    const actionButtons = document.getElementById('modalActionButtons');
+    
+    // Reset modal content
+    modalBody.innerHTML = `
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+        </div>
+    `;
+    actionButtons.innerHTML = '';
+    modalTitle.textContent = 'Chi tiết nhân viên';
+    
+    // Show modal
+    modal.show();
+    
+    // Fetch employee data
+    fetch(`/idle/employee/${employeeId}/detail`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const employee = data.employee;
+                modalTitle.textContent = `Chi tiết nhân viên: ${employee.full_name}`;
+                
+                modalBody.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3"><i class="fas fa-user"></i> Thông tin cơ bản</h6>
+                            <table class="table table-sm">
+                                <tr><td><strong>Họ tên:</strong></td><td>${employee.full_name || '-'}</td></tr>
+                                <tr><td><strong>Account:</strong></td><td>${employee.account || '-'}</td></tr>
+                                <tr><td><strong>Nguồn:</strong></td><td>${employee.source || '-'}</td></tr>
+                                <tr><td><strong>Quốc tịch:</strong></td><td>${employee.national || '-'}</td></tr>
+                                <tr><td><strong>Địa điểm hiện tại:</strong></td><td>${employee.current_location || '-'}</td></tr>
+                                <tr><td><strong>Nơi làm việc mong muốn:</strong></td><td>${employee.expected_working_place || '-'}</td></tr>
+                                <tr><td><strong>Ghi chú nơi làm việc:</strong></td><td>${employee.note_expected_working_place || '-'}</td></tr>
+                            </table>
+                            
+                            <h6 class="text-primary mb-3 mt-4"><i class="fas fa-building"></i> Thông tin bộ phận</h6>
+                            <table class="table table-sm">
+                                <tr><td><strong>Bộ phận:</strong></td><td>${employee.department || '-'}</td></tr>
+                                <tr><td><strong>Bộ phận con:</strong></td><td>${employee.child_department || '-'}</td></tr>
+                                <tr><td><strong>RA PIC:</strong></td><td>${employee.ra_pic || '-'}</td></tr>
+                                <tr><td><strong>HR quản lý:</strong></td><td>${employee.hr_manage === 'Yes' ? 'Có' : 'Không'}</td></tr>
+                            </table>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3"><i class="fas fa-clock"></i> Trạng thái Idle</h6>
+                            <table class="table table-sm">
+                                <tr><td><strong>Loại:</strong></td><td>${employee.type || '-'}</td></tr>
+                                <tr><td><strong>Tháng idle:</strong></td><td>${employee.idle_mm ? `<span class="badge bg-${employee.idle_mm >= 2 ? 'danger' : 'warning'}">${employee.idle_mm}</span>` : '-'}</td></tr>
+                                <tr><td><strong>Idle từ:</strong></td><td>${employee.idle_from || '-'}</td></tr>
+                                <tr><td><strong>Idle đến:</strong></td><td>${employee.idle_to || '-'}</td></tr>
+                                <tr><td><strong>Khẩn cấp:</strong></td><td>${employee.urgent_case === 'Yes' ? '<span class="badge bg-danger">Có</span>' : '<span class="badge bg-success">Không</span>'}</td></tr>
+                            </table>
+                            
+                            <h6 class="text-primary mb-3 mt-4"><i class="fas fa-language"></i> Kỹ năng & Ngôn ngữ</h6>
+                            <table class="table table-sm">
+                                <tr><td><strong>Trình độ JP:</strong></td><td>${employee.jp_level || '-'}</td></tr>
+                                <tr><td><strong>Trình độ EN:</strong></td><td>${employee.en_level || '-'}</td></tr>
+                                <tr><td><strong>Kỹ năng:</strong></td><td><div style="max-width: 300px; word-wrap: break-word;">${employee.skill || '-'}</div></td></tr>
+                                <tr><td><strong>Kinh nghiệm IT:</strong></td><td><div style="max-width: 300px; word-wrap: break-word;">${employee.experience_it || '-'}</div></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    ${getCurrentUserRole() === 'Admin' || getCurrentUserRole() === 'RA' || getCurrentUserRole() === 'MNG' ? `
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="text-danger mb-3"><i class="fas fa-lock"></i> Thông tin nhạy cảm (Chỉ Admin/RA/MNG)</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-sm">
+                                        <tr><td><strong>Ghi chú tiến độ:</strong></td><td><div style="max-width: 300px; word-wrap: break-word;">${employee.progress_note || '-'}</div></td></tr>
+                                        <tr><td><strong>Thay đổi bộ phận/Lending:</strong></td><td>${employee.change_dept_lending || '-'}</td></tr>
+                                        <tr><td><strong>Loại hành động đặc biệt:</strong></td><td>${employee.special_action_type || '-'}</td></tr>
+                                        <tr><td><strong>Vị trí công việc:</strong></td><td>${employee.job_rank || '-'}</td></tr>
+                                        <tr><td><strong>Ngày vào FJP:</strong></td><td>${employee.fjp_join_date || '-'}</td></tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-sm">
+                                        <tr><td><strong>Nhận xét bộ phận:</strong></td><td><div style="max-width: 300px; word-wrap: break-word;">${employee.current_dept_comment || '-'}</div></td></tr>
+                                        <tr><td><strong>Nhận xét phỏng vấn:</strong></td><td><div style="max-width: 300px; word-wrap: break-word;">${employee.interview_comment || '-'}</div></td></tr>
+                                        <tr><td><strong>Đánh giá Performance CHE:</strong></td><td><div style="max-width: 300px; word-wrap: break-word;">${employee.performance_che || '-'}</div></td></tr>
+                                        <tr><td><strong>Giá bán (JPY):</strong></td><td>${employee.sale_price_jpy ? `<strong class="text-success">${Number(employee.sale_price_jpy).toLocaleString()}</strong>` : '-'}</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3"><i class="fas fa-passport"></i> Thông tin Visa</h6>
+                            <table class="table table-sm">
+                                <tr><td><strong>Tình trạng Visa:</strong></td><td>${employee.visa_status || '-'}</td></tr>
+                                <tr><td><strong>Ngày apply:</strong></td><td>${employee.application_date || '-'}</td></tr>
+                                <tr><td><strong>Ngày hết hạn COE:</strong></td><td>${employee.expired_coe_date || '-'}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                
+                // Add action buttons
+                actionButtons.innerHTML = `
+                    ${getCurrentUserRole() === 'Admin' || getCurrentUserRole() === 'RA' || getCurrentUserRole() === 'MNG' ? `
+                    <a href="/idle/edit/${employeeId}" class="btn btn-primary me-2">
+                        <i class="fas fa-edit"></i> Chỉnh sửa
+                    </a>
+                    ` : ''}
+                    <a href="/idle/employee/${employeeId}/history" class="btn btn-info me-2">
+                        <i class="fas fa-history"></i> Lịch sử
+                    </a>
+                    ${getCurrentUserRole() === 'Admin' || getCurrentUserRole() === 'RA' ? `
+                    <button class="btn btn-danger" onclick="deleteEmployee(${employeeId})">
+                        <i class="fas fa-trash"></i> Xóa
+                    </button>
+                    ` : ''}
+                `;
+            } else {
+                modalBody.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> ${data.message || 'Không thể tải thông tin nhân viên'}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            modalBody.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> Có lỗi xảy ra khi tải thông tin nhân viên
+                </div>
+            `;
+        });
+}
+
+// Get current user role (you might need to adjust this based on your implementation)
+function getCurrentUserRole() {
+    // This should return the current user's role
+    // You might need to set this from the server or store it in a global variable
+    return '{{ current_user.role }}';
+}
+
 function deleteEmployee(employeeId) {
     if (confirm('Bạn có chắc chắn muốn xóa nhân viên này?')) {
         fetch(`/idle/delete/${employeeId}`, {
@@ -198,5 +387,37 @@ function showAlert(type, message) {
     `;
     document.querySelector('main').insertBefore(alertDiv, document.querySelector('main').firstChild);
 }
+
+// Search and filter functionality for large table
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const tableRows = document.querySelectorAll('tbody tr:not(.no-data)');
+    
+    function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusValue = statusFilter.value;
+        
+        tableRows.forEach(row => {
+            if (row.cells.length < 3) return; // Skip empty rows
+            
+            const rowText = row.textContent.toLowerCase();
+            const matchesSearch = !searchTerm || rowText.includes(searchTerm);
+            
+            if (matchesSearch) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+    }
+    if (statusFilter) {
+        statusFilter.addEventListener('change', applyFilters);
+    }
+});
 </script>
 {% endblock %}

@@ -33,12 +33,63 @@ Một ứng dụng web Flask để quản lý thông tin nhân viên idle trong 
 ## Cấu trúc dữ liệu
 
 ### Bảng Employee (Nhân viên)
-Chứa 32+ trường thông tin theo yêu cầu:
-- Thông tin cơ bản: Họ tên, Account, Bộ phận, Nguồn
-- Thông tin idle: Loại, Thời gian idle, Số tháng idle
-- Thông tin kỹ năng: Skill, Kinh nghiệm IT, Trình độ ngôn ngữ
-- Thông tin địa điểm: Vị trí hiện tại, Nơi mong muốn làm việc
-- Thông tin bổ sung: Nhận xét, Đánh giá, Giá bán, Visa status
+Chứa đầy đủ 32+ trường thông tin theo yêu cầu từ main.md:
+
+#### Thông tin cơ bản:
+- **No**: Auto-generated ID (STT)
+- **Source**: Nguồn (FJPer, FJP-Center, BA Program, XPM Program, External)
+- **Full name**: Họ tên đầy đủ theo quốc tịch (*)
+- **Account**: Account FPT (*)
+- **Department**: Bộ phận (dropdown list)
+- **Child Department**: Bộ phận con (dropdown list)
+
+#### Thông tin Idle:
+- **Idle MM**: Số tháng idle (number)
+- **Type**: Loại idle (Being Idle, To be Idle, Idle Short Term, etc.)
+- **Idle From**: Ngày bắt đầu idle (calendar)
+- **Idle To**: Ngày kết thúc idle (calendar)
+- **Progress note**: Ghi chú tiến độ (text)
+- **RA PIC**: Người phụ trách RA (Account FPT)
+
+#### Thông tin trạng thái:
+- **Change Dept/Lending**: Trạng thái thay đổi bộ phận/lending (dropdown)
+- **Urgent case**: Trường hợp khẩn cấp (Yes/No - auto fill nếu >=2 tháng)
+- **HR manage**: HR quản lý (Yes/No)
+- **Special Action type**: Loại hành động đặc biệt (dropdown có thể custom)
+
+#### Thông tin kỹ năng:
+- **Skill**: Kỹ năng (text)
+- **Experience IT**: Kinh nghiệm IT (text)
+- **JP Level**: Trình độ tiếng Nhật (dropdown: Native, N1, N2, N2-, N3, No JP)
+- **EN level**: Trình độ tiếng Anh (dropdown với TOEIC levels)
+
+#### Thông tin địa điểm:
+- **National**: Quốc tịch (dropdown)
+- **Current location**: Địa điểm hiện tại (dropdown)
+- **Expected Working place**: Nơi làm việc mong muốn (dropdown)
+- **Note Expected Working place**: Ghi chú nơi làm việc (text)
+
+#### Thông tin công việc:
+- **Job rank**: Cấp bậc công việc (dropdown với codes như DEVE01, FSEN02, etc.)
+- **FJP Join date**: Ngày vào FJP (calendar)
+
+#### Thông tin đánh giá:
+- **Current Dept comment**: Nhận xét bộ phận hiện tại (text)
+- **Interview comment**: Nhận xét phỏng vấn (text)
+- **Performance CHE**: Đánh giá performance CHE (text)
+
+#### Thông tin tài chính & visa:
+- **Sale price (JPY)**: Giá bán (number)
+- **Visa Status**: Tình trạng visa (text)
+- **Application date**: Ngày apply (text)
+- **Expired COE date**: Ngày hết hạn COE (text)
+
+#### Trường hệ thống:
+- **is_deleted**: Soft delete flag (boolean)
+- **created_at**: Ngày tạo (datetime)
+- **updated_at**: Ngày cập nhật (datetime)
+
+(*) = Trường bắt buộc khi Export/Import
 
 ### Bảng DropdownData
 Quản lý các giá trị dropdown list có thể custom được

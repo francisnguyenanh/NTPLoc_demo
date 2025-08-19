@@ -271,6 +271,53 @@ def delete_employee(employee_id):
     
     return jsonify({'success': True, 'message': 'Xóa nhân viên thành công'})
 
+@idle_bp.route('/employee/<int:employee_id>/detail')
+@login_required
+def get_employee_detail(employee_id):
+    """API endpoint to get employee details for modal"""
+    employee = Employee.query.get_or_404(employee_id)
+    
+    # Convert employee to dict
+    employee_data = {
+        'id': employee.id,
+        'source': employee.source,
+        'full_name': employee.full_name,
+        'account': employee.account,
+        'department': employee.department,
+        'child_department': employee.child_department,
+        'idle_mm': employee.idle_mm,
+        'type': employee.type,
+        'idle_from': employee.idle_from.strftime('%d/%m/%Y') if employee.idle_from else None,
+        'idle_to': employee.idle_to.strftime('%d/%m/%Y') if employee.idle_to else None,
+        'progress_note': employee.progress_note,
+        'ra_pic': employee.ra_pic,
+        'change_dept_lending': employee.change_dept_lending,
+        'urgent_case': employee.urgent_case,
+        'hr_manage': employee.hr_manage,
+        'special_action_type': employee.special_action_type,
+        'skill': employee.skill,
+        'experience_it': employee.experience_it,
+        'jp_level': employee.jp_level,
+        'en_level': employee.en_level,
+        'national': employee.national,
+        'current_location': employee.current_location,
+        'expected_working_place': employee.expected_working_place,
+        'note_expected_working_place': employee.note_expected_working_place,
+        'job_rank': employee.job_rank,
+        'fjp_join_date': employee.fjp_join_date.strftime('%d/%m/%Y') if employee.fjp_join_date else None,
+        'current_dept_comment': employee.current_dept_comment,
+        'interview_comment': employee.interview_comment,
+        'performance_che': employee.performance_che,
+        'sale_price_jpy': employee.sale_price_jpy,
+        'visa_status': employee.visa_status,
+        'application_date': employee.application_date,
+        'expired_coe_date': employee.expired_coe_date,
+        'created_at': employee.created_at.strftime('%d/%m/%Y %H:%M') if employee.created_at else None,
+        'updated_at': employee.updated_at.strftime('%d/%m/%Y %H:%M') if employee.updated_at else None
+    }
+    
+    return jsonify({'success': True, 'employee': employee_data})
+
 def get_all_dropdown_data():
     """Get all dropdown data grouped by category"""
     categories = ['Source', 'Type', 'Change Dept/Lending', 'JP Level', 'EN level',
