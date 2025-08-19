@@ -1,0 +1,392 @@
+# Dropdown Lists for Idle Management System
+
+This document outlines the dropdown list options for various fields in the Idle Resource Management system, based on the provided data. Each section lists unique, non-empty values for the respective field.
+
+## Source
+- FJPer
+- FJP-Center
+- BA Program
+- XPM Program
+- External
+- Cho phép custom
+
+## Change Dept/Lending
+- Change Dept or Lending
+- Lending Only
+- Not Yet Open
+- Back to offshore
+- Support internal Task
+- Invested
+- Unpaid Leave
+- Paid Leave
+- Training
+- Lack allocate for change Org
+- Long term off
+- Cho phép custom
+
+## Type
+- Being Idle
+- To be Idle
+- Idle Short Term
+- Lack BMM
+- Fix Customer
+- OUT FJP
+
+## Department
+- List Honbu
+- Cho phép custom
+
+## JP Level
+- Native
+- N1
+- N2
+- N2-
+- N3
+- No JP
+
+## Special Action type
+- Back to offshore
+- HR Health Check
+- MO
+- Find Opp
+- Fresher Program
+- Cho phép custom
+
+## EN level
+- Native
+- Upper-intermediate/Advanced (TOEIC 780 up)
+- Intermediate (TOEIC 600-780)
+- Elementary/Pre-intermediate (TOEIC 400-600)
+- Trình độ cơ bản (Beginner/Elementary) (TOEIC < 400)
+
+## Child Department
+- List Dept
+- Cho phép custom
+
+## National
+- List up country
+
+## Current location
+- Tokyo
+- Osaka
+- Nagoya
+- Fukuoka
+- Shizuoka
+- Hokkaido
+- Okinawa
+- Ibaraki
+- Tochigi
+- Gunma
+- Hiroshima
+- Việt Nam
+- Other
+- Cho phép custom
+
+## Expected Working place
+- Tokyo
+- Osaka
+- Nagoya
+- Fukuoka
+- Shizuoka
+- Hokkaido
+- Okinawa
+- Ibaraki
+- Tochigi
+- Gunma
+- Hiroshima
+- Việt Nam
+- Other
+- Cho phép custom
+
+## Job rank
+- AIEN01
+- AIEN02
+- AIEN03
+- AIEN04
+- AIEN05
+- DSEN01
+- DSEN02
+- DSEN03
+- DSEN04
+- DSEN05
+- DASC01
+- DASC02
+- DASC03
+- DASC04
+- DASC05
+- DSAN01
+- DSAN02
+- DSAN03
+- DSAN04
+- DSAN05
+- FPMG01
+- FPMG02
+- FPMG03
+- FPMG04
+- FPMG05
+- SARC01
+- SARC02
+- SARC03
+- SARC04
+- SARC05
+- SARE01
+- SARE02
+- SARE03
+- SARE04
+- SARE05
+- QSPO01
+- QSPO02
+- QSPO03
+- QSPO04
+- QSPO05
+- QSPO06
+- DEVE01
+- DEVE02
+- DEVE03
+- DEVE04
+- DEVE05
+- DEVE06
+- FSEN01
+- FSEN02
+- FSEN03
+- FSEN04
+- FSEN05
+- BANE01
+- BANE02
+- BANE03
+- BANE04
+- BANE05
+- BANE06
+- TEST01
+- TEST02
+- TEST03
+- TEST04
+- TEST05
+- TEST06
+- CAEE01
+- CAEE02
+- CAEE03
+- CAEE04
+- CAEE05
+- CAEE06
+- CADE01
+- CADE02
+- CADE03
+- CADE04
+- CADE05
+- CADE06
+- LALE01
+- LALE02
+- LALE03
+- LALE04
+- LALE05
+- LALE06
+- LADE01
+- LADE02
+- LADE03
+- LADE04
+- LADE05
+- LADE06
+- LPDE01
+- LPDE02
+- LPDE03
+- LPDE04
+- LPDE05
+- LPDE06
+- LSDS01
+- LSDS02
+- LSDS03
+- LSDS04
+- LSDS05
+- LSDS06
+- LRVE01
+- LRVE02
+- LRVE03
+- LRVE04
+- LRVE05
+- LRVE06
+- LRDE01
+- LRDE02
+- LRDE03
+- LRDE04
+- LRDE05
+- LRDE06
+- SHDO01
+- SHDO02
+- SHDO03
+- SHDO04
+- SHDO05
+- SHDO06
+- MSTO01
+- MSTO02
+- MSTO03
+- MSTO04
+- MSTO05
+- MSTO06
+- MSCO01
+- MSCO02
+- MSCO03
+- MSCO04
+- MSCO05
+- MSCO06
+- MRDO01
+- MRDO02
+- MRDO03
+- MRDO04
+- MRDO05
+- MRDO06
+- MSMO01
+- MSMO02
+- MSMO03
+- MSMO04
+- MSMO05
+- MSMO06
+- BCON01
+- BCON02
+- BCON03
+- BCON04
+- BCON05
+- BCON06
+- BCON07
+- BCON08
+- SALE 00
+- SALE 01
+- SALE 02
+- SALE 03
+- SALE 04
+- SALE 05
+- SALE 06
+- ELED01
+- SGMT01
+- SGMT02
+- SGMT03
+- SGMT04
+- SGMT05
+- INCO01
+- INCO02
+- INCO03
+- INCO04
+- INCO05
+- SECR01
+- SECR02
+- SECR03
+- SECR04
+- SECR05
+- CHAC01
+- CHAC02
+- CHAC03
+- CHAC04
+- CHAC05
+- ACCO01
+- ACCO02
+- ACCO03
+- ACCO04
+- ACCO05
+- ADMO01
+- ADMO02
+- ADMO03
+- ADMO04
+- ADMO05
+- ASET01
+- ASET02
+- ACSL01
+- ACSL02
+- ACSL03
+- ACSL04
+- ACSL05
+- ADMG01
+- ADMG02
+- ADMG03
+- ADMG04
+- ADMG05
+- SPMA01
+- SPMA02
+- SPMA03
+- SPMA04
+- SPMA05
+- MKTO01
+- MKTO02
+- MKTO03
+- MKTO04
+- MKTO05
+- TADO01
+- TADO02
+- TADO03
+- TADO04
+- TADO05
+- TRAI01
+- TRAI02
+- TRAI03
+- TRAI04
+- TRAI05
+- HRMG01
+- HRMG02
+- HRMG03
+- HRMG04
+- HRMG05
+- HRGE01
+- HRGE02
+- HRGE03
+- HRGE04
+- HRGE05
+- ISSM01
+- ISSM02
+- ISSM03
+- ISSM04
+- ISSM05
+- ISSO01
+- ISSO02
+- ISSO03
+- ISSO04
+- ISSO05
+- MARM01
+- MARM02
+- MARM03
+- MARM04
+- MARM05
+- L&IG01
+- L&IG02
+- L&IG03
+- L&IG04
+- L&IG05
+- LEGO01
+- LEGO02
+- LEGO03
+- LEGO04
+- LEGO05
+- RECE01
+- RECE02
+- RECE03
+- RECE04
+- RECE05
+- TADM01
+- TADM02
+- TADM03
+- TADM04
+- TADM05
+- REAM01
+- REAM02
+- REAM03
+- REAM04
+- REAM05
+- REAO01
+- REAO02
+- REAO03
+- REAO04
+- REAO05
+- PROC01
+- PROC02
+- PROC03
+- PROC04
+- PROC05
+- DRIV01
+- DRIV02
+- DRIV03
+- DRIV04
+- DRIV05
+- ITMG01
+- ITMG02
+- ITMG03
+- ITMG04
+- ITMG05
+- Cho phép custom
