@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Report - Idle Resource Management{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-chart-bar"></i> Báo cáo</h2>
+        <p class="text-muted">Các báo cáo thống kê về idle resource</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-file-excel fa-3x text-success mb-3"></i>
+                <h5>Xuất Excel</h5>
+                <p class="text-muted">Xuất danh sách idle resource ra file Excel</p>
+                <button class="btn btn-success" disabled>
+                    <i class="fas fa-download"></i> Đang phát triển
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
+                <h5>Xuất PDF</h5>
+                <p class="text-muted">Xuất báo cáo tổng hợp ra file PDF</p>
+                <button class="btn btn-danger" disabled>
+                    <i class="fas fa-download"></i> Đang phát triển
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+                <h5>Biểu đồ thống kê</h5>
+                <p class="text-muted">Xem biểu đồ thống kê chi tiết</p>
+                <button class="btn btn-info" disabled>
+                    <i class="fas fa-chart-bar"></i> Đang phát triển
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Thông tin</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h6>Các tính năng report sẽ bao gồm:</h6>
+                    <ul class="mb-0">
+                        <li><strong>Xuất Excel:</strong> Xuất toàn bộ dữ liệu idle resource theo định dạng Excel</li>
+                        <li><strong>Xuất PDF:</strong> Tạo báo cáo tổng hợp dạng PDF với biểu đồ và thống kê</li>
+                        <li><strong>Biểu đồ thống kê:</strong> Hiển thị các biểu đồ:
+                            <ul>
+                                <li>Phân bố idle theo bộ phận</li>
+                                <li>Xu hướng idle theo thời gian</li>
+                                <li>Thống kê urgent cases</li>
+                                <li>Phân tích kỹ năng và kinh nghiệm</li>
+                            </ul>
+                        </li>
+                        <li><strong>Báo cáo tuần/tháng:</strong> Báo cáo định kỳ gửi email tự động</li>
+                        <li><strong>Dashboard thời gian thực:</strong> Cập nhật số liệu realtime</li>
+                    </ul>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>Lưu ý:</strong> Các tính năng report này sẽ được phát triển trong các phiên bản tiếp theo.
+                    Hiện tại hệ thống đang tập trung vào các chức năng cốt lõi như quản lý dữ liệu idle resource.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

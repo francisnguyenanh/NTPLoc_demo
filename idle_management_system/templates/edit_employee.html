@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block title %}Chỉnh sửa nhân viên - Idle Resource Management{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-edit"></i> Chỉnh sửa nhân viên: {{ employee.full_name }}</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('idle.index') }}">Quản lý Idle</a></li>
+                <li class="breadcrumb-item active">Chỉnh sửa nhân viên</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<form method="POST">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Thông tin cơ bản</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nguồn (*)</label>
+                            <select name="source" class="form-select" required>
+                                <option value="">-- Chọn nguồn --</option>
+                                {% for value in dropdown_data.get('Source', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.source == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Loại (*)</label>
+                            <select name="type" class="form-select" required>
+                                <option value="">-- Chọn loại --</option>
+                                {% for value in dropdown_data.get('Type', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.type == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Họ tên (*)</label>
+                        <input type="text" name="full_name" class="form-control" value="{{ employee.full_name or '' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Account (*)</label>
+                        <input type="text" name="account" class="form-control" value="{{ employee.account or '' }}" required>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Bộ phận</label>
+                            <select name="department" class="form-select">
+                                <option value="">-- Chọn bộ phận --</option>
+                                {% for value in dropdown_data.get('Department', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.department == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Bộ phận con</label>
+                            <select name="child_department" class="form-select">
+                                <option value="">-- Chọn bộ phận con --</option>
+                                {% for value in dropdown_data.get('Child Department', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.child_department == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Số tháng idle</label>
+                            <input type="number" name="idle_mm" class="form-control" value="{{ employee.idle_mm or '' }}" min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">RA PIC</label>
+                            <input type="text" name="ra_pic" class="form-control" value="{{ employee.ra_pic or '' }}">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Idle từ</label>
+                            <input type="date" name="idle_from" class="form-control" 
+                                   value="{{ employee.idle_from.strftime('%Y-%m-%d') if employee.idle_from else '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Idle đến</label>
+                            <input type="date" name="idle_to" class="form-control"
+                                   value="{{ employee.idle_to.strftime('%Y-%m-%d') if employee.idle_to else '' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Thông tin chi tiết</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Thay đổi bộ phận/Lending</label>
+                            <select name="change_dept_lending" class="form-select">
+                                <option value="">-- Chọn trạng thái --</option>
+                                {% for value in dropdown_data.get('Change Dept/Lending', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.change_dept_lending == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Loại hành động đặc biệt</label>
+                            <select name="special_action_type" class="form-select">
+                                <option value="">-- Chọn loại --</option>
+                                {% for value in dropdown_data.get('Special Action type', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.special_action_type == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Trường hợp khẩn cấp</label>
+                            <select name="urgent_case" class="form-select">
+                                <option value="No" {{ 'selected' if employee.urgent_case == 'No' else '' }}>No</option>
+                                <option value="Yes" {{ 'selected' if employee.urgent_case == 'Yes' else '' }}>Yes</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">HR quản lý</label>
+                            <select name="hr_manage" class="form-select">
+                                <option value="No" {{ 'selected' if employee.hr_manage == 'No' else '' }}>No</option>
+                                <option value="Yes" {{ 'selected' if employee.hr_manage == 'Yes' else '' }}>Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú tiến độ</label>
+                        <textarea name="progress_note" class="form-control" rows="3">{{ employee.progress_note or '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Kỹ năng</label>
+                        <textarea name="skill" class="form-control" rows="2">{{ employee.skill or '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Kinh nghiệm IT</label>
+                        <textarea name="experience_it" class="form-control" rows="2">{{ employee.experience_it or '' }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Thông tin ngôn ngữ & địa điểm</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Trình độ tiếng Nhật</label>
+                            <select name="jp_level" class="form-select">
+                                <option value="">-- Chọn trình độ --</option>
+                                {% for value in dropdown_data.get('JP Level', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.jp_level == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Trình độ tiếng Anh</label>
+                            <select name="en_level" class="form-select">
+                                <option value="">-- Chọn trình độ --</option>
+                                {% for value in dropdown_data.get('EN level', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.en_level == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Quốc tịch</label>
+                            <select name="national" class="form-select">
+                                <option value="">-- Chọn quốc tịch --</option>
+                                {% for value in dropdown_data.get('National', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.national == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Vị trí công việc</label>
+                            <select name="job_rank" class="form-select">
+                                <option value="">-- Chọn vị trí --</option>
+                                {% for value in dropdown_data.get('Job rank', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.job_rank == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Địa điểm hiện tại</label>
+                            <select name="current_location" class="form-select">
+                                <option value="">-- Chọn địa điểm --</option>
+                                {% for value in dropdown_data.get('Current location', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.current_location == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nơi làm việc mong muốn</label>
+                            <select name="expected_working_place" class="form-select">
+                                <option value="">-- Chọn nơi làm việc --</option>
+                                {% for value in dropdown_data.get('Expected Working place', []) %}
+                                <option value="{{ value }}" {{ 'selected' if employee.expected_working_place == value else '' }}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú nơi làm việc mong muốn</label>
+                        <textarea name="note_expected_working_place" class="form-control" rows="2">{{ employee.note_expected_working_place or '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Ngày vào FJP</label>
+                        <input type="date" name="fjp_join_date" class="form-control"
+                               value="{{ employee.fjp_join_date.strftime('%Y-%m-%d') if employee.fjp_join_date else '' }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Thông tin bổ sung</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nhận xét bộ phận hiện tại</label>
+                        <textarea name="current_dept_comment" class="form-control" rows="3">{{ employee.current_dept_comment or '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Nhận xét phỏng vấn</label>
+                        <textarea name="interview_comment" class="form-control" rows="3">{{ employee.interview_comment or '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Đánh giá Performance CHE</label>
+                        <textarea name="performance_che" class="form-control" rows="3">{{ employee.performance_che or '' }}</textarea>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Giá bán (JPY)</label>
+                            <input type="number" name="sale_price_jpy" class="form-control" value="{{ employee.sale_price_jpy or '' }}" min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tình trạng Visa</label>
+                            <input type="text" name="visa_status" class="form-control" value="{{ employee.visa_status or '' }}">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Ngày apply</label>
+                            <input type="text" name="application_date" class="form-control" value="{{ employee.application_date or '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Ngày hết hạn COE</label>
+                            <input type="text" name="expired_coe_date" class="form-control" value="{{ employee.expired_coe_date or '' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{{ url_for('idle.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Cập nhật
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

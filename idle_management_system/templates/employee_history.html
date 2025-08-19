@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Lịch sử thay đổi - {{ employee.full_name }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-history"></i> Lịch sử thay đổi: {{ employee.full_name }}</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('idle.index') }}">Quản lý Idle</a></li>
+                <li class="breadcrumb-item active">Lịch sử thay đổi</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Thông tin nhân viên</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <strong>Họ tên:</strong> {{ employee.full_name }}
+            </div>
+            <div class="col-md-3">
+                <strong>Account:</strong> {{ employee.account }}
+            </div>
+            <div class="col-md-3">
+                <strong>Bộ phận:</strong> {{ employee.department or '-' }}
+            </div>
+            <div class="col-md-3">
+                <strong>Loại:</strong> {{ employee.type or '-' }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h5>Lịch sử thay đổi</h5>
+    </div>
+    <div class="card-body">
+        {% if history %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Thời gian</th>
+                        <th>Trường dữ liệu</th>
+                        <th>Giá trị cũ</th>
+                        <th>Giá trị mới</th>
+                        <th>Người thay đổi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in history %}
+                    <tr>
+                        <td>
+                            <small>{{ record.changed_at.strftime('%d/%m/%Y %H:%M:%S') }}</small>
+                        </td>
+                        <td>
+                            <strong>{{ get_field_display_name(record.field_name) }}</strong>
+                        </td>
+                        <td>
+                            {% if record.old_value %}
+                                <span class="text-muted">{{ record.old_value }}</span>
+                            {% else %}
+                                <em class="text-muted">Trống</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if record.new_value %}
+                                <span class="text-primary">{{ record.new_value }}</span>
+                            {% else %}
+                                <em class="text-muted">Trống</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ record.changed_by }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="fas fa-info-circle fa-3x text-muted"></i>
+            <p class="text-muted mt-2">Chưa có lịch sử thay đổi nào</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <a href="{{ url_for('idle.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+        <a href="{{ url_for('idle.edit_employee', employee_id=employee.id) }}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
