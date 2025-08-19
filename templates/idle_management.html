@@ -29,11 +29,14 @@
                 <div class="d-flex gap-2">
                     <input type="text" id="searchInput" class="form-control form-control-sm" 
                            placeholder="Tìm kiếm theo tên, account, skill...">
-                    <select id="statusFilter" class="form-select form-select-sm">
+                    <select id="statusFilter" class="form-select form-select-sm filter-select" data-column="type">
                         <option value="">Tất cả trạng thái</option>
                         <option value="Being Idle">Being Idle</option>
                         <option value="To be Idle">To be Idle</option>
                         <option value="Idle Short Term">Idle Short Term</option>
+                        <option value="Lack BMM">Lack BMM</option>
+                        <option value="Fix Customer">Fix Customer</option>
+                        <option value="OUT FJP">OUT FJP</option>
                     </select>
                 </div>
             </div>
@@ -87,7 +90,7 @@
                                 -
                             {% endif %}
                         </td>
-                        <td>
+                        <td data-column="type">
                             {% if employee.type %}
                                 <span class="badge bg-info">{{ employee.type }}</span>
                             {% else %}
@@ -202,6 +205,9 @@
 
 {% block scripts %}
 <script>
+// Set page identifier for JavaScript initialization
+document.body.setAttribute('data-page', 'idle-management');
+
 // Hiển thị modal chi tiết nhân viên
 function showEmployeeDetail(employeeId) {
     const modal = new bootstrap.Modal(document.getElementById('employeeDetailModal'));

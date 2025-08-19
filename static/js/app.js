@@ -112,19 +112,53 @@ function applyFilters() {
         }
     });
     
+    console.log('Active filters:', filters);
+    
     const tableRows = document.querySelectorAll('tbody tr');
-    tableRows.forEach(row => {
+    const pagination = document.querySelector('.pagination');
+    let visibleCount = 0;
+    let hasActiveFilters = Object.keys(filters).length > 0;
+    
+    // Hide pagination when filters are active
+    if (pagination) {
+        if (hasActiveFilters) {
+            pagination.parentElement.style.display = 'none';
+        } else {
+            pagination.parentElement.style.display = '';
+        }
+    }
+    
+    tableRows.forEach((row, index) => {
         let showRow = true;
         
-        Object.keys(filters).forEach(column => {
-            const cell = row.querySelector(`[data-column="${column}"]`);
-            if (cell && !cell.textContent.includes(filters[column])) {
-                showRow = false;
-            }
-        });
+        if (hasActiveFilters) {
+            Object.keys(filters).forEach(column => {
+                const cell = row.querySelector(`[data-column="${column}"]`);
+                if (cell) {
+                    // Get text content without HTML tags for better matching
+                    const cellText = cell.textContent.trim();
+                    console.log(`Row ${index}: Cell text="${cellText}", Filter="${filters[column]}", Match=${cellText.includes(filters[column])}`);
+                    if (!cellText.includes(filters[column])) {
+                        showRow = false;
+                    }
+                }
+            });
+        }
         
-        row.style.display = showRow ? '' : 'none';
+        if (showRow) {
+            row.classList.remove('filter-hidden', 'd-none');
+            row.style.removeProperty('display');
+            visibleCount++;
+            if (hasActiveFilters) console.log(`Row ${index}: VISIBLE`);
+        } else {
+            row.classList.add('filter-hidden');
+            if (hasActiveFilters) console.log(`Row ${index}: HIDDEN`);
+        }
     });
+    
+    // Update row count info if exists
+    const totalRows = tableRows.length;
+    console.log(`Filter applied: ${visibleCount}/${totalRows} rows visible`);
 }
 
 // Export functionality

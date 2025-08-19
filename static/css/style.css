@@ -44,6 +44,11 @@ body {
     border-radius: 0.5rem;
 }
 
+/* Filter hidden rows */
+.filter-hidden {
+    display: none !important;
+}
+
 /* Custom colors for status badges */
 .bg-idle {
     background-color: #ffc107 !important;
